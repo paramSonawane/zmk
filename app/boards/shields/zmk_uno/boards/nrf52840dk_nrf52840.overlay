@@ -63,4 +63,14 @@ encoder: &qdec0 {
 
         wakeup-sources = <&soft_off_direct_kscan>;
     };
+
+    chosen {
+        zmk,studio-rpc-uart = &studio_uart;
+    };
+};
+
+&zephyr_udc0 {
+    studio_uart: studio_uart {
+        compatible = "zephyr,cdc-acm-uart";
+    };
 };
