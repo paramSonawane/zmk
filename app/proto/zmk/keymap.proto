@@ -4,6 +4,47 @@ package zmk.keymap;
 
 message Request {
     oneof request_type {
-        bool get_layer_summaries = 1;
+        bool get_keymap = 1;
+        SetLayerBindingRequest set_layer_binding = 2;
+        bool save_changes = 3;
+        bool discard_changes = 4;
     }
+}
+
+message Response {
+    oneof response_type {
+        Keymap get_keymap = 1;
+        SetLayerBindingResponse set_layer_binding = 2;
+        bool save_changes = 3;
+        bool discard_changes = 4;
+    }
+}
+
+enum SetLayerBindingResponse {
+    SUCCESS = 0;
+    INVALID_LOCATION = 1;
+    INVALID_BEHAVIOR = 2;
+    INVALID_PARAMETERS = 3;
+}
+
+message SetLayerBindingRequest {
+    int32 layer = 1;
+    int32 key_position = 2;
+
+    BehaviorBinding binding = 3;
+}
+
+message Keymap {
+    repeated Layer layers = 1;
+}
+
+message Layer {
+    string name = 1;
+    repeated BehaviorBinding bindings = 2;
+}
+
+message BehaviorBinding {
+    sint32 behavior_id = 1;
+    uint32 param1 = 2;
+    uint32 param2 = 3;
 }
