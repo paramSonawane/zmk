@@ -12,7 +12,7 @@
 #define ZMK_BEHAVIOR_TRANSPARENT 1
 
 struct zmk_behavior_binding {
-    char *behavior_dev;
+    const char *behavior_dev;
     uint32_t param1;
     uint32_t param2;
 };
@@ -58,3 +58,16 @@ zmk_behavior_local_id_t zmk_behavior_get_local_id(const char *name);
  * @retval NULL if the behavior is not found or its initialization function failed.
  */
 const char *zmk_behavior_find_behavior_name_from_local_id(zmk_behavior_local_id_t local_id);
+
+
+/**
+ * @brief Validate a given behavior binding matches the behavior metadata describing valid parameters.
+ *
+ * @param binding The behavior binding to validate
+ *
+ * @retval 0 if the passed in binding is valid.
+ * @retval -ENODEV if binding is NULL.
+ * @retval -EINVAL if binding parameters are not valid for the behavior metadata.
+ */
+int zmk_behavior_validate_binding(const struct zmk_behavior_binding *binding);
+
