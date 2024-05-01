@@ -11,7 +11,7 @@
 };
 
 &split_direct_matrix_transform {
-    row-offset = <2>;
+    col-offset = <4>;
 };
 
 &right_encoder {
