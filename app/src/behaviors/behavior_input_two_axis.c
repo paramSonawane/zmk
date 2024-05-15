@@ -77,6 +77,8 @@ static int64_t ms_since_start(int64_t start, int64_t now, int64_t delay) {
     return move_duration;
 }
 
+static float speed_factor = 2;
+
 static float speed(const struct behavior_input_two_axis_config *config, float max_speed,
                    int64_t duration_ms) {
     // Calculate the speed based on MouseKeysAccel
@@ -87,10 +89,10 @@ static float speed(const struct behavior_input_two_axis_config *config, float ma
 
     if (duration_ms > config->time_to_max_speed_ms || config->time_to_max_speed_ms == 0 ||
         config->acceleration_exponent == 0) {
-        return max_speed;
+        return speed_factor * max_speed;
     }
     float time_fraction = (float)duration_ms / config->time_to_max_speed_ms;
-    return max_speed * powf(time_fraction, config->acceleration_exponent);
+    return speed_factor * max_speed * powf(time_fraction, config->acceleration_exponent);
 }
 
 static void track_remainder(float *move, float *remainder) {
@@ -227,6 +229,17 @@ static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
     int16_t x = MOVE_X_DECODE(binding->param1);
     int16_t y = MOVE_Y_DECODE(binding->param1);
 
+    if (x == 1) {
+        speed_factor = 0.5;
+        return 0;
+    } else if (x == 2) {
+        speed_factor =  1;
+        return 0;
+    } else if (x == 3) {
+        speed_factor = 3;
+        return 0;
+    }
+
     behavior_input_two_axis_adjust_speed(behavior_dev, x, y);
     return 0;
 }
@@ -239,6 +252,10 @@ static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
 
     int16_t x = MOVE_X_DECODE(binding->param1);
     int16_t y = MOVE_Y_DECODE(binding->param1);
+
+    if ((x == 1) | (x == 2) | (x == 3)) {
+        return 0;
+    }
 
     behavior_input_two_axis_adjust_speed(behavior_dev, -x, -y);
     return 0;
